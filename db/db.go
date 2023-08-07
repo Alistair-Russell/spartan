@@ -1,93 +1,41 @@
 package db
+
 import (
-   "context"
-   "errors"
-   "github.com/go-redis/redis/v8"
-   "reflect"
-)
-type Database struct {
-   Client *redis.Client
-}
-var (
-   ErrNil = errors.New("no matching record found in redis database")
-   Ctx    = context.TODO()
+	"fmt"
+
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
-func structToMap(issue *Issue) map[string]interface{} {
-    values := make(map[string]interface{})
-    issueValue := reflect.ValueOf(issue).Elem()
+// DB Connection String
+func dbvar() string {
+	// // CONFIG VARS
+	// DB_HOST := os.Getenv("DB_HOST")
+	// DB_PORT := os.Getenv("DB_PORT")
+	// DB_PASSWORD := os.Getenv("DB_PASSWORD")
+	// DB_NAME := os.Getenv("DB_NAME")
+	// DB_USER := os.Getenv("DB_USER")
 
-    for i := 0; i < issueValue.NumField(); i++ {
-        if issueValue.Field(i).CanInterface() {
-            values[issueValue.Type().Field(i).Name] = issueValue.Field(i).Interface()
-        }
-    }
+	// dsn := ("host=" + DB_HOST +
+	// 	" user=" + DB_USER +
+	// 	" password=" + DB_PASSWORD +
+	// 	" dbname=" + DB_NAME +
+	// 	" port=" + DB_PORT +
+	// 	" sslmode=disable TimeZone=Asia/Shanghai")
 
-    return values
+	// Local DB
+	dsn := "host=localhost user=postgres password=postgres dbname=spartandb port=5432 sslmode=disable"
+
+	return dsn
 }
 
-func mapToIssue(issueMap map[string]string) *Issue {
-    issue := &Issue{}
-    issueValue := reflect.ValueOf(issue).Elem()
-
-    for i := 0; i < issueValue.NumField(); i++ {
-        fieldName := issueValue.Type().Field(i).Name
-        if value, ok := issueMap[fieldName]; ok {
-            field := issueValue.FieldByName(fieldName)
-            if field.IsValid() && field.CanSet() {
-                switch field.Kind() {
-                case reflect.String:
-                    field.SetString(value)
-                // Add cases for other types as needed, e.g. int, float, etc.
-                }
-            }
-        }
-    }
-
-    return issue
-}
-
-func NewDatabase(address string) (*Database, error) {
-   client := redis.NewClient(&redis.Options{
-      Addr: address,
-      Password: "",
-      DB: 0,
-   })
-   if err := client.Ping(Ctx).Err(); err != nil {
-      return nil, err
-   }
-   return &Database{
-      Client: client,
-   }, nil
-}
-
-func (db *Database) CreateIssue(issue *Issue) string {
-    // generate a unique id for the issue
-    issueID := fmt.Sprintf("issue:%s", issue.ID)
-
-    // convert the issue to a map
-    issueMap := structToMap(issue)
-
-    // save the issue to redis
-    db.Client.HMSet(Ctx, issueID, issueMap)
-
-    return issueID
-}
-
-func (db *Database) GetIssue(issueID string) *Issue {
-    issueMap := db.Client.HGetAll(Ctx, issueID).Val()
-
-    // convert the map to an issue
-    issue := mapToIssue(issueMap)
-
-    return issue
-}
-
-func (db *Database) UpdateIssue(issueID string, updatedFields map[string]interface{}) {
-    db.Client.HMSet(Ctx, issueID, updatedFields)
-}
-
-func (db *Database) DeleteIssue(issueID string) {
-    db.Client.Del(Ctx, issueID)
-}
-
+// Database Connection
+var DB = func() (db *gorm.DB) {
+	if db, err := gorm.Open("postgres", dbvar()); err != nil {
+		fmt.Println("Connection to database failed", err)
+		panic(err)
+	} else {
+		fmt.Println("Connected to database")
+		return db
+	}
+}()
