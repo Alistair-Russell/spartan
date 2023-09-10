@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+{{ template "header" .}}
+
+<body>
+    <!-- Main -->
+    <main class="container">
+
+        <!-- Issue Creation -->
+        <section id="preview">
+            <h2>Issue Creation</h2>
+            <p>
+                Use the following form to create issues
+            </p>
+            <form>
+                <input type="text" name="issuesummary" placeholder="Issue summary" aria-label="Issue summary" required />
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+        <!-- ./ Issue Creation -->
+
+        <!-- Issue List -->
+        <section id="typography">
+            <h2>Issues</h2>
+            <!-- Lists-->
+            <h3>Lists</h3>
+            <ul>
+                <li>Aliquam lobortis lacus eu libero ornare facilisis.</li>
+                <li>Nam et magna at libero scelerisque egestas.</li>
+                <li>Suspendisse id nisl ut leo finibus vehicula quis eu ex.</li>
+                <li>Proin ultricies turpis et volutpat vehicula.</li>
+            </ul>
+        </section>
+        <!-- ./ Issue List -->
+
+    </main>
+    <!-- ./ Main -->
+
+    <!-- Minimal theme switcher -->
+    <script src="static/js/minimal-theme-switcher.js"></script>
+</body>
+
+</html>

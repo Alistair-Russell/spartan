@@ -43,7 +43,7 @@ type Stats struct {
 
 func CountStats() Stats {
 	var stats Stats
-	db.DB.Model(&models.Issue{}).Count(&stats.Issues)
-	db.DB.Model(&models.Project{}).Count(&stats.Projects)
+	//db.DB.Model(&models.Issue{}).Count(&stats.Issues)
+	//db.DB.Model(&models.Project{}).Count(&stats.Projects)
 	return stats
 }
