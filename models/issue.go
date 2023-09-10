@@ -18,7 +18,9 @@ func GetIssues(c *fiber.Ctx) error {
 	database := db.DBConn
 	var issues []Issue
 	database.Find(&issues)
-	return c.JSON(issues)
+    // TODO: this isn't appropriately handling html responses.
+    // TODO: need to figure out how best to handle this in go/fiber
+    return c.Render("issues", fiber.Map{"Issues":issues})
 }
 
 func GetIssue(c *fiber.Ctx) error {
@@ -26,7 +28,11 @@ func GetIssue(c *fiber.Ctx) error {
 	database := db.DBConn
 	var issue Issue
 	database.Find(&issue, id)
-	return c.JSON(issue)
+	return c.Render("issue", fiber.Map{
+        "Title": issue.Title,
+        "Description": issue.Description,
+        "Status": issue.Status,
+    })
 }
 
 func CreateIssue(c *fiber.Ctx) error {
@@ -36,7 +42,12 @@ func CreateIssue(c *fiber.Ctx) error {
         return c.Status(503).SendString(err.Error())
     }
 	database.Create(&issue)
-	return c.JSON(issue)
+	//return c.JSON(issue)
+	return c.Render("issue", fiber.Map{
+        "Title": issue.Title,
+        "Description": issue.Description,
+        "Status": issue.Status,
+    })
 }
 
 func DeleteIssue(c *fiber.Ctx) error {

@@ -16,7 +16,10 @@ import (
 
 func setupRoutes(app *fiber.App) {
     app.Get("/", func(c *fiber.Ctx) error {
-        return c.Render("index", fiber.Map{})
+        return c.Render("index", fiber.Map{"Issues": models.GetIssues})
+    })
+    app.Get("/issues", func(c *fiber.Ctx) error {
+        return c.Render("issue-list", fiber.Map{})
     })
     app.Get("/api/v1/issue", models.GetIssues)
     app.Get("/api/v1/issue/:id", models.GetIssue)
@@ -30,9 +33,9 @@ func initDB () {
     if err != nil {
         panic("failed to connect database")
     }
-    fmt.Print("Connection opened to database")
+    fmt.Print("Connection opened to database\n")
     models.Migrate()
-    fmt.Print("Database migrated")
+    fmt.Print("Database migrated\n")
 }
 
 func main() {
@@ -47,12 +50,3 @@ func main() {
     log.Fatal(app.Listen(":3000"))
 }
 
-// Render either HTML or JSON depending on 'Accept' header
-//func render(c *gin.Context, data gin.H, templateName string) {
-//	switch c.Request.Header.Get("Accept") {
-//	case "application/json":
-//		c.JSON(http.StatusOK, data["payload"])
-//	default:
-//		c.HTML(http.StatusOK, templateName, data)
-//	}
-//}
