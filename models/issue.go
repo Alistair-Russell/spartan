@@ -18,9 +18,15 @@ func GetIssues(c *fiber.Ctx) error {
 	database := db.DBConn
 	var issues []Issue
 	database.Find(&issues)
-    // TODO: this isn't appropriately handling html responses.
-    // TODO: need to figure out how best to handle this in go/fiber
     return c.Render("issues", fiber.Map{"Issues":issues})
+}
+
+func DeleteIssues(c *fiber.Ctx) error {
+	database := db.DBConn
+	var issues []Issue
+	database.Find(&issues)
+    database.Delete(&issues)
+    return c.SendString("Issues successfully deleted")
 }
 
 func GetIssue(c *fiber.Ctx) error {

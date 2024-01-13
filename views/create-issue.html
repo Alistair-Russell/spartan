@@ -1,5 +1,5 @@
 <div class="create-issue">
-    <form hx-post="/api/v1/issue" hx-target="#issue-list" hx-swap="afterbegin">
+    <form hx-post="/api/v1/issue" hx-trigger="submit" hx-swap="none">
         <input type="text" id="title" name="title" placeholder="One-line summary of the problem..." required minlength="4" maxlength="256" size="10" />
         <input type="text" id="description" name="description" placeholder="Issue description..." required minlength="10" maxlength="256" size="10" />
         <button type="submit">Create</button>

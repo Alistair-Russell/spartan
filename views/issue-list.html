@@ -7,9 +7,11 @@
     <main class="container">
 
         <!-- Issue List -->
-        <section id="typography">
+        <section id="issues">
             <h2>Issues</h2>
-            {{ template "issues" . }}
+            <div id="issue-list" hx-get="/api/v1/issue" hx-trigger="htmx:afterSwap on #issue-form" hx-swap="beforeend">
+                <!-- Issues appended here -->
+            </div>
         </section>
         <!-- ./ Issue List -->
 

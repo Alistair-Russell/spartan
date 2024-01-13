@@ -7,19 +7,24 @@
     <main class="container">
 
         <!-- Issue Creation -->
-        <section id="preview">
+        <section id="issue-submission">
             <h2>Issue Creation</h2>
             <p>
                 Use the following form to create issues
             </p>
             {{ template "create-issue" . }}
+            <button hx-delete="/api/v1/issue" hx-confirm="Are you sure you wish to delete all issues?">
+                Delete Issue
+            </button>
         </section>
         <!-- ./ Issue Creation -->
 
         <!-- Issue List -->
-        <section id="typography">
+        <section id="issues">
             <h2>Issues</h2>
-            {{ template "issues" . }}
+            <div id="issue-list" hx-get="/api/v1/issue" hx-trigger="load, every 1s" hx-swap="innerHtml">
+                <!-- Issues appended here -->
+            </div>
         </section>
         <!-- ./ Issue List -->
 
