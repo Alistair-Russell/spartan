@@ -2,36 +2,23 @@
 package main
 
 import (
+	"gitlab.com/alistairr/spartan/db"
+	"gitlab.com/alistairr/spartan/handlers"
 	"gitlab.com/alistairr/spartan/models"
 
-	"database/sql"
 	"fmt"
 	"log"
+	"net/http"
+	"time"
 
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/template/html/v2"
+	"github.com/gorilla/mux"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
-func setupRoutes(app *fiber.App) {
-	// page routes
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.Render("index", fiber.Map{"Issues": models.GetIssues})
-	})
-	app.Get("/issues", func(c *fiber.Ctx) error {
-		return c.Render("issue-list", fiber.Map{})
-	})
-	// api routes
-	app.Get("/api/v1/issue", models.GetIssues)
-	app.Delete("/api/v1/issue", models.DeleteIssues)
-	app.Get("/api/v1/issue/:id", models.GetIssue)
-	app.Post("/api/v1/issue", models.CreateIssue)
-	app.Delete("/api/v1/issue/:id", models.DeleteIssue)
-}
-
 func initDB() {
-	var dbUrl = "libsql://welcomed-iron-fist-alistair-russell.turso.io"
-	db, err := sql.Open("libsql", dbUrl)
+	var err error
+	db.DBConn, err = gorm.Open(sqlite.Open("spartan.db"))
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -40,14 +27,33 @@ func initDB() {
 	fmt.Print("Database migrated\n")
 }
 
+func initRoutes() *mux.Router {
+	r := mux.NewRouter()
+	r.HandleFunc("/", handlers.IndexHandler)
+	r.HandleFunc("/users", handlers.UsersHandler).Methods("GET")
+	r.HandleFunc("/users/{userid:[0-9]+}", handlers.UserHandler)
+	r.HandleFunc("/projects", handlers.ProjectsHandler).Methods("GET")
+	r.HandleFunc("/projects/{projectid}", handlers.ProjectHandler)
+	r.HandleFunc("/issues", handlers.IssuesHandler).Methods("GET")
+	r.HandleFunc("/issues/{issueid}", handlers.IssueHandler)
+	// static rroutes
+	fs := http.FileServer(http.Dir("static/"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	return r
+}
+
 func main() {
-	engine := html.New("./views", ".html")
-	app := fiber.New(fiber.Config{Views: engine})
-	app.Use(cors.New())
-
 	initDB()
+	// init router
+	router := initRoutes()
 
-	setupRoutes(app)
-
-	log.Fatal(app.Listen(":3001"))
+	// Initiate server
+	srv := &http.Server{
+		Handler: router,
+		Addr:    "127.0.0.1:80",
+		// Good practice: enforce timeouts
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+	log.Fatal(srv.ListenAndServe())
 }
