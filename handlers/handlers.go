@@ -12,7 +12,10 @@ import (
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	io.WriteString(w, `{"alive": true}`)
+	_, err := io.WriteString(w, `{"alive": true}`)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func UsersHandler(w http.ResponseWriter, r *http.Request) {

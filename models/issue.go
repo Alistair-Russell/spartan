@@ -14,5 +14,8 @@ type Issue struct {
 }
 
 func Migrate() {
-	db.DBConn.AutoMigrate(&Issue{})
+	dberr := db.DBConn.AutoMigrate(&Issue{})
+	if dberr != nil {
+		panic(dberr)
+	}
 }
