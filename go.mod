@@ -1,29 +1,26 @@
 module gitlab.com/alistairr/spartan
 
-go 1.20
+go 1.21
+
+toolchain go1.21.6
 
 require (
-	github.com/gofiber/fiber/v2 v2.49.1
-	github.com/gofiber/template/html/v2 v2.0.5
+	dagger.io/dagger v0.9.6
+	github.com/gorilla/mux v1.8.1
 	gorm.io/driver/sqlite v1.5.3
 	gorm.io/gorm v1.25.4
 )
 
 require (
-	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/gofiber/template v1.8.2 // indirect
-	github.com/gofiber/utils v1.1.0 // indirect
-	github.com/google/uuid v1.3.1 // indirect
+	github.com/99designs/gqlgen v0.17.31 // indirect
+	github.com/Khan/genqlient v0.6.0 // indirect
+	github.com/adrg/xdg v0.4.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/klauspost/compress v1.16.7 // indirect
-	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.19 // indirect
-	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/mattn/go-sqlite3 v1.14.17 // indirect
-	github.com/rivo/uniseg v0.2.0 // indirect
-	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.49.0 // indirect
-	github.com/valyala/tcplisten v1.0.0 // indirect
-	golang.org/x/sys v0.11.0 // indirect
+	github.com/mitchellh/go-homedir v1.1.0 // indirect
+	github.com/vektah/gqlparser/v2 v2.5.6 // indirect
+	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
+	golang.org/x/sync v0.4.0 // indirect
+	golang.org/x/sys v0.13.0 // indirect
 )
