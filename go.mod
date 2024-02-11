@@ -1,8 +1,6 @@
 module gitlab.com/alistairr/spartan
 
-go 1.21
-
-toolchain go1.21.6
+go 1.22
 
 require (
 	dagger.io/dagger v0.9.6
