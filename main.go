@@ -11,7 +11,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gorilla/mux"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -27,31 +26,29 @@ func initDB() {
 	fmt.Print("Database migrated\n")
 }
 
-func initRoutes() *mux.Router {
-	r := mux.NewRouter()
-	r.HandleFunc("/", handlers.IndexHandler)
-	r.HandleFunc("/users", handlers.UsersHandler).Methods("GET")
-	r.HandleFunc("/users/{userid:[0-9]+}", handlers.UserHandler)
-	r.HandleFunc("/projects", handlers.ProjectsHandler).Methods("GET")
-	r.HandleFunc("/projects/{projectid}", handlers.ProjectHandler)
-	r.HandleFunc("/issues", handlers.IssuesHandler).Methods("GET")
-	r.HandleFunc("/issues/{issueid}", handlers.IssueHandler)
+func initRoutes() *http.ServeMux {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", handlers.IndexHandler)
+	mux.HandleFunc("/users", handlers.UsersHandler)
+	mux.HandleFunc("/users/{userid}", handlers.UserHandler)
+	mux.HandleFunc("/projects", handlers.ProjectsHandler)
+	mux.HandleFunc("/projects/{projectid}", handlers.ProjectHandler)
+	mux.HandleFunc("/issues", handlers.IssuesHandler)
+	mux.HandleFunc("/issues/{issueid}", handlers.IssueHandler)
 	// static rroutes
 	fs := http.FileServer(http.Dir("static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
-	return r
+	return mux
 }
 
 func main() {
 	initDB()
-	// init router
-	router := initRoutes()
+	handler := initRoutes()
 
 	// Initiate server
 	srv := &http.Server{
-		Handler: router,
-		Addr:    "127.0.0.1:3000",
-		// Good practice: enforce timeouts
+		Addr:         "127.0.0.1:3000",
+		Handler:      handler,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}

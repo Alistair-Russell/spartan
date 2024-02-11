@@ -3,8 +3,6 @@ package handlers
 import (
 	"io"
 
-	"github.com/gorilla/mux"
-
 	"fmt"
 	"net/http"
 )
@@ -19,49 +17,34 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func UsersHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	project := vars["project"]
-	issue := vars["issue"]
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "You've requested the issue: %s in project %s\n", issue, project)
+	fmt.Fprintf(w, "You've requested users\n")
 }
 
 func UserHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	project := vars["userid"]
-	issue := vars["issue"]
+	user := r.PathValue("userid")
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "You've requested the issue: %s in project %s\n", issue, project)
+	fmt.Fprintf(w, "You've requested user: %s\n", user)
 }
 
 func ProjectsHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	project := vars["project"]
-	issue := vars["issue"]
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "You've requested the issue: %s in project %s\n", issue, project)
+	fmt.Fprintf(w, "You've requested projects\n")
 }
 
 func ProjectHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	project := vars["project"]
-	issue := vars["issue"]
+	projectId := r.PathValue("projectid")
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "You've requested the issue: %s in project %s\n", issue, project)
+	fmt.Fprintf(w, "You've requested the project: %s\n", projectId)
 }
 
 func IssuesHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	project := vars["project"]
-	issue := vars["issue"]
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "You've requested the issue: %s in project %s\n", issue, project)
+	fmt.Fprintf(w, "You've requested issues\n")
 }
 
 func IssueHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	project := vars["project"]
-	issue := vars["issue"]
+	issueId := r.PathValue("issueid")
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "You've requested the issue: %s in project %s\n", issue, project)
+	fmt.Fprintf(w, "You've requested the issue: %s\n", issueId)
 }
