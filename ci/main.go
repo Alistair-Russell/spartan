@@ -19,7 +19,7 @@ func main() {
 	src := client.Host().Directory(".")
 
 	_, err = client.Container().
-		From("golangci/golangci-lint:v1.55").
+		From("golangci/golangci-lint:v1.56").
 		WithMountedDirectory("/src", src).
 		WithWorkdir("/src").
 		WithExec([]string{"golangci-lint", "run", "-v"}).
@@ -29,7 +29,7 @@ func main() {
 	}
 
 	_, err = client.Container().
-		From("golang:1.21").
+		From("golang:1.22").
 		WithMountedDirectory("/src", src).
 		WithWorkdir("/src").
 		WithExec([]string{"go", "test"}).

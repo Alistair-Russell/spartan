@@ -29,6 +29,7 @@ func initDB() {
 func initRoutes() *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", handlers.IndexHandler)
+	mux.HandleFunc("GET /status", handlers.StatusHandler)
 	mux.HandleFunc("/users", handlers.UsersHandler)
 	mux.HandleFunc("/users/{userid}", handlers.UserHandler)
 	mux.HandleFunc("/projects", handlers.ProjectsHandler)

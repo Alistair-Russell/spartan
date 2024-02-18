@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"html/template"
+	"io"
 	"net/http"
 	"path/filepath"
 
@@ -19,6 +20,15 @@ func init() {
 		panic(err)
 	}
 	templates = template.Must(template.ParseFiles(templateFiles...))
+}
+
+func StatusHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	_, err := io.WriteString(w, `{"alive": true}`)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
