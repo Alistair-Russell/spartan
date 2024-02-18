@@ -1,10 +1,5 @@
 <div class="create-issue container">
-    <form
-        hx-post="/api/v1/issue"
-        hx-trigger="submit"
-        hx-swap="none"
-        class="mt-4"
-    >
+    <form hx-post="/issues" hx-trigger="submit" hx-swap="none" class="mt-4">
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>
             <input
@@ -33,6 +28,11 @@
                 size="10"
             />
         </div>
+        <hx-trigger
+            hidden
+            hx-target="#issue-list-container"
+            hx-trigger="server:refresh-issue-list"
+        ></hx-trigger>
         <button type="submit" class="btn btn-primary">Create</button>
     </form>
 </div>

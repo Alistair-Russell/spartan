@@ -1,25 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-{{ template "header" .}}
-
-<body>
-    <!-- Main -->
-    <main class="container">
-
-        <!-- Issue List -->
-        <section id="issues">
-            <h2>Issues</h2>
-            <div id="issue-list" hx-get="/api/v1/issue" hx-trigger="htmx:afterSwap on #issue-form" hx-swap="beforeend">
-                <!-- Issues appended here -->
-            </div>
-        </section>
-        <!-- ./ Issue List -->
-
-    </main>
-    <!-- ./ Main -->
-
-    <!-- Minimal theme switcher -->
-    <script src="static/js/minimal-theme-switcher.js"></script>
-</body>
-
-</html>
+<div id="issue-list-container">
+    {{range .}}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Title: {{ .Title }}</h5>
+            <p class="card-text">Description: {{ .Description }}</p>
+            <p class="card-text"><small>Status: {{ .Status }}</small></p>
+        </div>
+    </div>
+    {{end}}
+</div>

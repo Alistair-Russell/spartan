@@ -4,29 +4,24 @@
         {{template "header.html"}}
     </head>
     <body>
-        <!-- Main -->
-        <main class="container">
-            <!-- Issue Creation -->
-            <section id="issues">
-                <h2>Issues</h2>
+        <main class="container py-5">
+            <section id="issue-creation" class="mb-5">
+                <h2 class="border-bottom pb-3">Create Issue</h2>
                 {{template "create-issue.html"}}
             </section>
-            <!-- ./ Issue Creation -->
-            <!-- Issue List -->
-            <section id="issues">
-                <h2>Issues</h2>
-                <button
+            <section id="issue-list">
+                <h2 class="border-bottom pb-3">Issue List</h2>
+                <div id="issue-list-container">
+                    <p id="loading-message">Loading issues...</p>
+                </div>
+                <div
                     hx-get="/issues"
-                    hx-target="#issues-container"
-                    class="btn btn-primary"
-                >
-                    List Issues
-                </button>
-                <div id="issues-container"></div>
+                    hx-target="#issue-list-container"
+                    hx-swap="outerHTML"
+                    hx-trigger="load, every 2s"
+                ></div>
             </section>
-            <!-- ./ Issue List -->
         </main>
-        <!-- ./ Main -->
         {{template "footer.html"}}
     </body>
 </html>

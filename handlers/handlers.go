@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"io"
@@ -38,7 +39,23 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func UsersHandler(w http.ResponseWriter, r *http.Request) {
+func CreateUsersHandler(w http.ResponseWriter, r *http.Request) {
+	var issues []models.Issue
+	dbconn := db.DBConn
+	if err := dbconn.Find(&issues).Error; err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	// Render the template with data
+	w.WriteHeader(http.StatusOK)
+	err := templates.ExecuteTemplate(w, "issues_list.tmpl", issues)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func ListUsersHandler(w http.ResponseWriter, r *http.Request) {
 	var issues []models.Issue
 	dbconn := db.DBConn
 	if err := dbconn.Find(&issues).Error; err != nil {
@@ -71,9 +88,46 @@ func ProjectHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "You've requested the project: %s\n", projectId)
 }
 
-func IssuesHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "You've requested issues\n")
+func CreateIssuesHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, "Invalid form data", http.StatusBadRequest)
+		return
+	}
+
+	var newIssue models.Issue
+	newIssue.Title = r.FormValue("title")
+	newIssue.Description = r.FormValue("description")
+
+	// TODO: Validate and sanitize issue data (if needed)
+	err = db.DBConn.Create(&newIssue).Error
+	if err != nil {
+		http.Error(w, "Failed to create issue", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("HX-Trigger", "refresh-issue-list")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(newIssue) // Return the newly created issue
+}
+
+func ListIssuesHandler(w http.ResponseWriter, r *http.Request) {
+	var issues []models.Issue
+	dbconn := db.DBConn
+	if err := dbconn.Find(&issues).Error; err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	// Render the template with data
+	err := templates.ExecuteTemplate(w, "issue-list.html", issues)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func IssueHandler(w http.ResponseWriter, r *http.Request) {

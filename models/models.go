@@ -23,10 +23,10 @@ type Project struct {
 
 type Issue struct {
 	gorm.Model
-	Title        string
-	Description  string
-	Status       string
-	ProjectRefer uint
+	Title        string `json:"title"`
+	Description  string `json:"description"`
+	Status       string `json:"status,omitempty,default:\"open\""`
+	ProjectRefer uint   `json:"project_refer,omitempty,default:0"`
 }
 
 func Migrate() {
