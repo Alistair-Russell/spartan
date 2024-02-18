@@ -4,7 +4,6 @@ go 1.22
 
 require (
 	dagger.io/dagger v0.9.6
-	github.com/gorilla/mux v1.8.1
 	gorm.io/driver/sqlite v1.5.3
 	gorm.io/gorm v1.25.4
 )

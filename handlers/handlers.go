@@ -1,24 +1,47 @@
 package handlers
 
 import (
-	"io"
-
 	"fmt"
+	"html/template"
 	"net/http"
+	"path/filepath"
+
+	"gitlab.com/alistairr/spartan/db"
+	"gitlab.com/alistairr/spartan/models"
 )
 
-func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	_, err := io.WriteString(w, `{"alive": true}`)
+// Parse templates once when initializing handlers
+var templates *template.Template
+
+func init() {
+	templateFiles, err := filepath.Glob("views/*")
 	if err != nil {
 		panic(err)
+	}
+	templates = template.Must(template.ParseFiles(templateFiles...))
+}
+
+func IndexHandler(w http.ResponseWriter, r *http.Request) {
+	if err := templates.ExecuteTemplate(w, "index.html", nil); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }
 
 func UsersHandler(w http.ResponseWriter, r *http.Request) {
+	var issues []models.Issue
+	dbconn := db.DBConn
+	if err := dbconn.Find(&issues).Error; err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	// Render the template with data
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "You've requested users\n")
+	err := templates.ExecuteTemplate(w, "issues_list.tmpl", issues)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func UserHandler(w http.ResponseWriter, r *http.Request) {

@@ -45,7 +45,6 @@ func main() {
 	initDB()
 	handler := initRoutes()
 
-	// Initiate server
 	srv := &http.Server{
 		Addr:         "127.0.0.1:3000",
 		Handler:      handler,

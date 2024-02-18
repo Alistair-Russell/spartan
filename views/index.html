@@ -1,38 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-{{ template "header" .}}
-
-<body>
-    <!-- Main -->
-    <main class="container">
-
-        <!-- Issue Creation -->
-        <section id="issue-submission">
-            <h2>Issue Creation</h2>
-            <p>
-                Use the following form to create issues
-            </p>
-            {{ template "create-issue" . }}
-            <button hx-delete="/api/v1/issue" hx-confirm="Are you sure you wish to delete all issues?">
-                Delete Issue
-            </button>
-        </section>
-        <!-- ./ Issue Creation -->
-
-        <!-- Issue List -->
-        <section id="issues">
-            <h2>Issues</h2>
-            <div id="issue-list" hx-get="/api/v1/issue" hx-trigger="load, every 1s" hx-swap="innerHtml">
-                <!-- Issues appended here -->
-            </div>
-        </section>
-        <!-- ./ Issue List -->
-
-    </main>
-    <!-- ./ Main -->
-
-    <!-- Minimal theme switcher -->
-    <script src="static/js/minimal-theme-switcher.js"></script>
-</body>
-
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+    <head>
+        {{template "header.html"}}
+    </head>
+    <body>
+        <!-- Main -->
+        <main class="container">
+            <!-- Issue Creation -->
+            <section id="issues">
+                <h2>Issues</h2>
+                {{template "create-issue.html"}}
+            </section>
+            <!-- ./ Issue Creation -->
+            <!-- Issue List -->
+            <section id="issues">
+                <h2>Issues</h2>
+                <button
+                    hx-get="/issues"
+                    hx-target="#issues-container"
+                    class="btn btn-primary"
+                >
+                    List Issues
+                </button>
+                <div id="issues-container"></div>
+            </section>
+            <!-- ./ Issue List -->
+        </main>
+        <!-- ./ Main -->
+        {{template "footer.html"}}
+    </body>
 </html>
