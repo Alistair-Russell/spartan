@@ -28,19 +28,30 @@ func initDB() {
 
 func initRoutes() *http.ServeMux {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", handlers.IndexHandler)
-	mux.HandleFunc("GET /status", handlers.StatusHandler)
+
+	// GET and POST routes for /users
 	mux.HandleFunc("GET /users", handlers.ListUsersHandler)
 	mux.HandleFunc("POST /users", handlers.CreateUsersHandler)
-	mux.HandleFunc("/users/{userid}", handlers.UserHandler)
-	mux.HandleFunc("/projects", handlers.ProjectsHandler)
-	mux.HandleFunc("/projects/{projectid}", handlers.ProjectHandler)
+	mux.HandleFunc("GET /users/{userid}", handlers.GetUserByIdHandler)
+
+	// GET and POST routes for /projects
+	mux.HandleFunc("GET /projects", handlers.ListProjectsHandler)
+	mux.HandleFunc("POST /projects", handlers.CreateProjectsHandler)
+	mux.HandleFunc("GET /projects/{projectid}", handlers.GetProjectByIdHandler)
+
+	// GET and POST routes for /issues
 	mux.HandleFunc("GET /issues", handlers.ListIssuesHandler)
 	mux.HandleFunc("POST /issues", handlers.CreateIssuesHandler)
-	mux.HandleFunc("/issues/{issueid}", handlers.IssueHandler)
-	// static rroutes
+	mux.HandleFunc("GET /issues/{issueid}", handlers.GetIssueByIdHandler)
+
+	// Other routes...
+	mux.HandleFunc("/", handlers.IndexHandler)
+
+	// Static file routing
+	mux.HandleFunc("GET /status", handlers.StatusHandler)
 	fs := http.FileServer(http.Dir("static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
+
 	return mux
 }
 
